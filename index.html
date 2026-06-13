@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Attrition Analysis | Garv Verma</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-color: #0a0b10;
+            --surface-color: rgba(255, 255, 255, 0.03);
+            --surface-hover: rgba(255, 255, 255, 0.06);
+            --border-color: rgba(255, 255, 255, 0.05);
+            --accent-primary: #00C9FF;
+            --accent-secondary: #92FE9D;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 15% 50%, rgba(0, 201, 255, 0.05), transparent 25%),
+                              radial-gradient(circle at 85% 30%, rgba(146, 254, 157, 0.05), transparent 25%);
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: var(--font-heading);
+            font-weight: 700;
+        }
+
+        a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: var(--accent-primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 0;
+            background: rgba(10, 11, 16, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        /* Section Spacing */
+        section {
+            padding: 6rem 0;
+        }
+
+        /* Hero */
+        .hero {
+            padding-top: 12rem;
+            padding-bottom: 4rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 4rem auto;
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: var(--surface-hover);
+            border-color: rgba(0, 201, 255, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(0, 201, 255, 0.1);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .kpi-value {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            background: linear-gradient(135deg, #fff, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .kpi-value.accent {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .kpi-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .tool-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+
+        .tool-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(0, 201, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .tool-content h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .tool-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Findings Grid */
+        .findings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .finding-card i[data-lucide] {
+            color: var(--accent-primary);
+            margin-bottom: 1.5rem;
+            width: 32px;
+            height: 32px;
+        }
+
+        .finding-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .finding-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Methodology */
+        .methodology-timeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            position: relative;
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 201, 255, 0.1);
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            margin: 0 auto 1.5rem auto;
+            border: 1px solid rgba(0, 201, 255, 0.2);
+        }
+
+        /* Tableau Embed */
+        .tableau-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            min-height: 600px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: var(--surface-color);
+            position: relative;
+        }
+
+        .tableau-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 0;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .footer-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 1024px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .kpi-value {
+                font-size: 2.5rem;
+            }
+            .tableau-container {
+                aspect-ratio: 4/3;
+                min-height: 500px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-content">
+            <div class="logo font-heading">HR ATTRITION // ANALYTICS</div>
+            <div class="nav-links">
+                <a href="#overview">Overview</a>
+                <a href="#tools">Tools</a>
+                <a href="#findings">Findings</a>
+                <a href="#methodology">Methodology</a>
+                <a href="#dashboard">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero / KPIs -->
+    <section id="overview" class="hero reveal">
+        <div class="container">
+            <h1>Decoding HR Attrition</h1>
+            <p>A comprehensive analysis of employee turnover factors across 1,470 individuals using data analytics tools to uncover the primary drivers of attrition.</p>
+            
+            <div class="kpi-grid">
+                <div class="card">
+                    <div class="kpi-value"><span class="counter" data-target="1470">0</span></div>
+                    <div class="kpi-label">Total Employees</div>
+                </div>
+                <div class="card">
+                    <div class="kpi-value"><span class="counter" data-target="237">0</span></div>
+                    <div class="kpi-label">Attrited Employees</div>
+                </div>
+                <div class="card">
+                    <div class="kpi-value accent"><span class="counter" data-target="16.1" data-decimal="1">0</span>%</div>
+                    <div class="kpi-label">Overall Attrition Rate</div>
+                </div>
+                <div class="card">
+                    <div class="kpi-value accent"><span class="counter" data-target="3">0</span>x</div>
+                    <div class="kpi-label">Overtime Risk Factor</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools -->
+    <section id="tools">
+        <div class="container reveal">
+            <div class="section-header">
+                <h2>Tools & Technology</h2>
+                <p style="color: var(--text-secondary);">The data stack used to process, analyze, and visualize the findings.</p>
+            </div>
+            
+            <div class="tools-grid">
+                <div class="card tool-card">
+                    <div class="tool-icon">
+                        <i data-lucide="table"></i>
+                    </div>
+                    <div class="tool-content">
+                        <h3>Google Sheets</h3>
+                        <p>Used for initial data auditing, cleaning, and preliminary tabular analysis to validate dataset integrity.</p>
+                    </div>
+                </div>
+                <div class="card tool-card">
+                    <div class="tool-icon">
+                        <i data-lucide="terminal"></i>
+                    </div>
+                    <div class="tool-content">
+                        <h3>Python (Pandas, Seaborn)</h3>
+                        <p>Extensive Exploratory Data Analysis (EDA), statistical correlation mapping, and identifying outliers in high earners.</p>
+                    </div>
+                </div>
+                <div class="card tool-card">
+                    <div class="tool-icon">
+                        <i data-lucide="pie-chart"></i>
+                    </div>
+                    <div class="tool-content">
+                        <h3>Tableau</h3>
+                        <p>Building high-fidelity interactive dashboards and constructing the final data storytelling presentation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Findings -->
+    <section id="findings">
+        <div class="container reveal">
+            <div class="section-header">
+                <h2>Key Findings</h2>
+                <p style="color: var(--text-secondary);">Critical insights discovered during the exploratory analysis phase.</p>
+            </div>
+
+            <div class="findings-grid">
+                <div class="card finding-card">
+                    <i data-lucide="trending-down"></i>
+                    <h3>Sales Department Vulnerability</h3>
+                    <p>The Sales department exhibits the highest attrition rate across the organization at <strong>20.6%</strong>, significantly above the 16.1% average.</p>
+                </div>
+                <div class="card finding-card">
+                    <i data-lucide="clock"></i>
+                    <h3>The Overtime Burnout</h3>
+                    <p>Employees working overtime are <strong>3x more likely</strong> to leave (30% attrition) compared to those who do not (10% attrition).</p>
+                </div>
+                <div class="card finding-card">
+                    <i data-lucide="user-minus"></i>
+                    <h3>Year 0 Flight Risk</h3>
+                    <p>Employees in their first year (Tenure: 0) face a massive <strong>36% attrition rate</strong>, indicating onboarding is the biggest organizational risk.</p>
+                </div>
+                <div class="card finding-card">
+                    <i data-lucide="shield-check"></i>
+                    <h3>The High Earner Cushion</h3>
+                    <p>High earners identified as outliers showcase extremely strong retention, with an attrition rate of only <strong>4.4%</strong>.</p>
+                </div>
+                <div class="card finding-card" style="grid-column: 1 / -1; background: linear-gradient(to right, var(--surface-color), rgba(0,201,255,0.05));">
+                    <i data-lucide="target"></i>
+                    <h3>Top Attrition Drivers Summary</h3>
+                    <p>The statistical analysis pinpoints four primary drivers of turnover: <strong>OverTime, Low Tenure, Low Job Level, and Low Monthly Income</strong>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology -->
+    <section id="methodology">
+        <div class="container reveal">
+            <div class="section-header">
+                <h2>Analytical Methodology</h2>
+                <p style="color: var(--text-secondary);">A three-step approach from raw data to interactive storytelling.</p>
+            </div>
+
+            <div class="methodology-timeline">
+                <div class="card step-card">
+                    <div class="step-number">1</div>
+                    <h3>Data Cleaning</h3>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">Importing the IBM dataset into Sheets for structural validation and hygiene checks.</p>
+                </div>
+                <div class="card step-card">
+                    <div class="step-number">2</div>
+                    <h3>Exploratory Analysis</h3>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">Using Python's data science stack to find correlations, outliers, and test hypotheses.</p>
+                </div>
+                <div class="card step-card">
+                    <div class="step-number">3</div>
+                    <h3>Visualization</h3>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">Designing interactive dashboards in Tableau to communicate the findings effectively.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Embed -->
+    <section id="dashboard">
+        <div class="container reveal">
+            <div class="section-header">
+                <h2>Live Dashboard</h2>
+                <p style="color: var(--text-secondary);">Interact with the full Tableau story embedded below.</p>
+            </div>
+
+            <div class="tableau-container">
+                <iframe src="https://public.tableau.com/views/HRAttritionAnalysis-GarvVerma/Story1?:embed=y&:showVizHome=no&:publish=yes" title="HR Attrition Dashboard"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="font-heading" style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem;">Built by Garv Verma</p>
+            <p>Data Visualization & Analytics Showcase</p>
+            
+            <div class="footer-links">
+                <a href="https://github.com/garvverma3" target="_blank" rel="noopener noreferrer">
+                    <i data-lucide="github" style="width: 20px; height: 20px;"></i>
+                    GitHub Profile
+                </a>
+                <a href="https://public.tableau.com/app/profile/garv.verma4431/viz/HRAttritionAnalysis-GarvVerma/Story1?publish=yes" target="_blank" rel="noopener noreferrer">
+                    <i data-lucide="bar-chart-2" style="width: 20px; height: 20px;"></i>
+                    Tableau Public
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Scroll Reveal Observer
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    
+                    // If it's the hero section, trigger counters
+                    if(entry.target.classList.contains('hero')) {
+                        startCounters();
+                    }
+                    
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Counter Animation Logic
+        let countersStarted = false;
+        
+        function startCounters() {
+            if(countersStarted) return;
+            countersStarted = true;
+            
+            const counters = document.querySelectorAll('.counter');
+            const speed = 1500; // Total time in ms
+            
+            counters.forEach(counter => {
+                const target = parseFloat(counter.getAttribute('data-target'));
+                const isDecimal = counter.hasAttribute('data-decimal');
+                const duration = speed;
+                const frameDuration = 1000 / 60; // 60fps
+                const totalFrames = Math.round(duration / frameDuration);
+                let currentFrame = 0;
+                
+                const easeOutQuad = t => t * (2 - t);
+                
+                const timer = setInterval(() => {
+                    currentFrame++;
+                    const progress = easeOutQuad(currentFrame / totalFrames);
+                    const currentVal = target * progress;
+                    
+                    if (isDecimal) {
+                        counter.innerText = currentVal.toFixed(1);
+                    } else {
+                        // format with comma
+                        counter.innerText = Math.round(currentVal).toLocaleString();
+                    }
+                    
+                    if (currentFrame === totalFrames) {
+                        clearInterval(timer);
+                        if (isDecimal) {
+                            counter.innerText = target.toFixed(1);
+                        } else {
+                            counter.innerText = target.toLocaleString();
+                        }
+                    }
+                }, frameDuration);
+            });
+        }
+    </script>
+</body>
+</html>
