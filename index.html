@@ -209,8 +209,9 @@
 
         /* Tools Grid */
         .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 2rem;
         }
 
@@ -218,6 +219,8 @@
             display: flex;
             align-items: flex-start;
             gap: 1.5rem;
+            flex: 1 1 300px;
+            max-width: 500px;
         }
 
         .tool-icon {
@@ -244,9 +247,15 @@
 
         /* Findings Grid */
         .findings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 2rem;
+        }
+
+        .finding-card {
+            flex: 1 1 320px;
+            max-width: 500px;
         }
 
         .finding-card i[data-lucide] {
@@ -269,8 +278,9 @@
 
         /* Methodology */
         .methodology-timeline {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 2rem;
             position: relative;
         }
@@ -278,6 +288,8 @@
         .step-card {
             text-align: center;
             padding: 3rem 2rem;
+            flex: 1 1 250px;
+            max-width: 400px;
         }
         
         .step-number {
@@ -518,7 +530,7 @@
                     <h3>The High Earner Cushion</h3>
                     <p>High earners identified as outliers showcase extremely strong retention, with an attrition rate of only <strong>4.4%</strong>.</p>
                 </div>
-                <div class="card finding-card" style="grid-column: 1 / -1; background: linear-gradient(to right, var(--surface-color), rgba(0,201,255,0.05));">
+                <div class="card finding-card" style="flex: 1 1 100%; max-width: 100%; background: linear-gradient(to right, var(--surface-color), rgba(0,201,255,0.05));">
                     <i data-lucide="target"></i>
                     <h3>Top Attrition Drivers Summary</h3>
                     <p>The statistical analysis pinpoints four primary drivers of turnover: <strong>OverTime, Low Tenure, Low Job Level, and Low Monthly Income</strong>.</p>
