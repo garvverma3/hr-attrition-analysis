@@ -295,22 +295,57 @@
             border: 1px solid rgba(0, 201, 255, 0.2);
         }
 
-        /* Tableau Embed */
-        .tableau-container {
+        /* Dashboard Preview */
+        .dashboard-preview {
             width: 100%;
-            aspect-ratio: 16/9;
-            min-height: 600px;
+            padding: 5rem 2rem;
             border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            background: var(--surface-color);
-            position: relative;
+            border: 2px dashed var(--accent-primary);
+            background: #0f0f0f;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
         }
 
-        .tableau-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .dashboard-preview:hover {
+            box-shadow: 0 10px 30px -10px rgba(0, 201, 255, 0.15);
+            background: rgba(15, 15, 15, 0.8);
+        }
+
+        .dashboard-preview h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .dashboard-preview p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #000;
+            font-weight: 600;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 201, 255, 0.3);
+            color: #000;
         }
 
         /* Footer */
@@ -361,10 +396,6 @@
             }
             .kpi-value {
                 font-size: 2.5rem;
-            }
-            .tableau-container {
-                aspect-ratio: 4/3;
-                min-height: 500px;
             }
         }
 
@@ -524,16 +555,21 @@
         </div>
     </section>
 
-    <!-- Dashboard Embed -->
+    <!-- Dashboard Preview -->
     <section id="dashboard">
         <div class="container reveal">
             <div class="section-header">
                 <h2>Live Dashboard</h2>
-                <p style="color: var(--text-secondary);">Interact with the full Tableau story embedded below.</p>
+                <p style="color: var(--text-secondary);">Access the full interactive visualization on Tableau Public.</p>
             </div>
 
-            <div class="tableau-container">
-                <iframe src="https://public.tableau.com/views/HRAttritionAnalysis-GarvVerma/Story1?:embed=y&:showVizHome=no&:publish=yes" title="HR Attrition Dashboard"></iframe>
+            <div class="dashboard-preview">
+                <i data-lucide="bar-chart-2" style="width: 64px; height: 64px; color: var(--accent-primary); margin-bottom: 1.5rem;"></i>
+                <h3>Interactive Tableau Dashboard</h3>
+                <p>Explore the full 3-part story — Overview, Root Causes, and Recommendations.</p>
+                <a href="https://public.tableau.com/app/profile/garv.verma4431/viz/HRAttritionAnalysis-GarvVerma/Story1?publish=yes" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                    Open Live Dashboard &rarr;
+                </a>
             </div>
         </div>
     </section>
